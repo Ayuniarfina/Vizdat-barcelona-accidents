@@ -9,7 +9,7 @@ def praprocess(df):
     df['Month'] = pd.Categorical(df['Month'], categories=month, ordered=True)
     df.sort_values(by=['Month'], inplace=True)
     df['year'] = 2017
-    df['date'] = pd.to_datetime(df[['year', 'month', 'Day']])
+    df['Date'] = pd.to_datetime(df[['year', 'month', 'Day']])
     
     return df
 
