@@ -5,8 +5,9 @@ from dash.dependencies import Input, Output
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# Import dash html, bootstrap components, and tables for datatables
-import dash_html_components as html
+import dash
+#  html, bootstrap components, and tables for datatables
+from dash import html
 import dash_bootstrap_components as dbc
 # import dash_core_components as dcc
 # import dash_table
@@ -28,7 +29,7 @@ DATA_PATH = PATH.joinpath("data").resolve()
 df = pd.read_csv(DATA_PATH.joinpath("accidents_2017.csv"))
 df = d.praprocess(df)
 
-data = pd.read_csv("new_accidents_2017.csv")
+data = pd.read_csv(DATA_PATH.joinpath("new_accidents_2017.csv"))
 data["Date"] = pd.to_datetime(data["Date"], format="%Y-%m-%d")
 data.sort_values("Date", inplace=True)
 df_mild = pd.read_csv(DATA_PATH.joinpath("sum_mild_injuries.csv"))
