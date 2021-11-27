@@ -44,7 +44,7 @@ header = dbc.Row(
 
 content = html.Div([dcc.Location(id="url"), html.Div(id="page-content")])
 
-container = dbc.Container([content])
+container = dbc.Container(fluid=True, children=[content])
 
 
 # Menu callback, set and return
