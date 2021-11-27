@@ -28,9 +28,8 @@ indicators_month = df['Month'].unique()
 indicators_month = np.append(indicators_month, 'All')
 
 df.sort_values("Date", inplace=True)
-df_mild = pd.read_csv(DATA_PATH.joinpath("sum_mild_injuries.csv"))
-df_serious = pd.read_csv(DATA_PATH.joinpath("sum_serious_injuries.csv"))
 
+df_mild = pd.read_csv(DATA_PATH.joinpath("sum_mild_injuries.csv"))
 with open('districtes.geojson') as json_data:
     Barcelona_data = json.load(json_data)
 
@@ -61,29 +60,6 @@ fig1.update_layout(
     ),
     margin={"r":0,"t":0,"l":0,"b":0}
 )
-
-fig2 = px.choropleth_mapbox(df_mild, 
-                            geojson=Barcelona_data, 
-                            color="Count_Mild_injuries",
-                            locations="District_Name", 
-                            featureidkey="properties.NOM",
-                            center={"lat": 41.389223, "lon": 2.167939},
-                            mapbox_style="open-street-map", 
-                            zoom=10)
-
-fig2.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
-fig3 = px.choropleth_mapbox(df_serious, 
-                            geojson=Barcelona_data, 
-                            color="Count_Serious_injuries",
-                            locations="District_Name", 
-                            featureidkey="properties.NOM",
-                            center={"lat": 41.389223, "lon": 2.167939},
-                            mapbox_style="open-street-map", 
-                            zoom=10)
-
-fig3.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
 
 # Input
 inputs_district = dbc.Form([
@@ -121,7 +97,7 @@ spatialLayout = html.Div([
                 html.Br(),
 
                 inputs_date,
-                html.Br(),html.Br(),html.Br(),
+                html.Br(),html.Br(),
                 
                 html.Div(id="output-panel")
             ]),
@@ -129,12 +105,11 @@ spatialLayout = html.Div([
             dbc.Col(md=9, children=[
                 # dbc.Col(html.H4("Barcelona Accidents"), width={"size":6,"offset":3}), 
                 dbc.Tabs(className="nav nav-pills", children=[
-                    dbc.Tab(dcc.Graph(id="plot-mild", figure=fig2), label="Mild injuries"),
-                    dbc.Tab(dcc.Graph(id="plot-serious", figure=fig3), label="Serious injuries")
+                    dbc.Tab(dcc.Graph(id="plot-mild"), label="Mild injuries"),
+                    dbc.Tab(dcc.Graph(id="plot-serious"), label="Serious injuries")
                 ])
             ])
         ])
     ], 
     className="app-page",
 )
-
