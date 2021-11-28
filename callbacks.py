@@ -9,6 +9,8 @@ import dash
 #  html, bootstrap components, and tables for datatables
 from dash import html
 import dash_bootstrap_components as dbc
+from dash.dependencies import State
+from datetime import datetime
 # import dash_core_components as dcc
 # import dash_table
 
@@ -192,3 +194,41 @@ def plot_mild_cases(district, start_date, end_date):
         ])
         
     return fig1, fig2, panel
+
+@app.callback(
+    Output('my_graph1', 'figure'),
+    [Input('submit-button', 'n_clicks')],
+    [State('my_ticker_symbol', 'value')])
+    # State('my_date_picker', 'start_date'),
+    # State('my_date_picker', 'end_date')])
+def update_graph(n_clicks, stock_ticker):
+    # start = datetime.strptime(start_date[:10], '%Y-%m-%d')
+    # end = datetime.strptime(end_date[:10], '%Y-%m-%d')
+    
+    dfNew = df[df['District Name'] == stock_ticker]
+    dff = dfNew.groupby('Neighborhood Name', as_index=False)[['Mild injuries','Serious injuries']].sum()
+    
+    trace1 = go.Bar(
+                y=dff['Neighborhood Name'],  
+                x=dff['Mild injuries'],
+                orientation='h',
+                name = 'Mild Injury',
+                marker=dict(color='#FFD700'))
+
+    trace2 = go.Bar(
+                y=dff['Neighborhood Name'],
+                x=dff['Serious injuries'],
+                orientation='h',
+                name='Serious Injury',
+                marker=dict(color='Crimson'))
+    data = [trace1, trace2]
+    
+    fig = {
+        'data': data,
+        'layout': go.Layout(
+                title='Accident Record in '+stock_ticker,
+                barmode='stack'
+        )
+    }
+
+    return fig
