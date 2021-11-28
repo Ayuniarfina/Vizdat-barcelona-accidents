@@ -32,6 +32,45 @@ df.sort_values("Date", inplace=True)
 df_mild = pd.read_csv(DATA_PATH.joinpath("sum_mild_injuries.csv"))
 with open('districtes.geojson') as json_data:
     Barcelona_data = json.load(json_data)
+    
+accident_df=df
+accident_df['killed+injured'] = df['Mild injuries'] + df['Serious injuries'] + df['Victims']
+temp_df = accident_df.groupby(['District Name'])['killed+injured'].sum().sort_values(axis=0, ascending=False)
+
+
+trace0 = go.Bar(x = temp_df.index,
+                y = temp_df.values,
+                marker = dict(color=list(temp_df.values))
+                )
+
+data = [trace0]
+
+
+wkday = accident_df.groupby(['Weekday']).\
+        agg({'Mild injuries':'sum', 'Serious injuries':'sum'}).reset_index()
+wkday
+
+ordered_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+      "Sunday"]
+
+# sorting data accoring to ordered_days
+wkday['to_sort']=wkday['Weekday'].apply(lambda x:ordered_days.index(x))
+wkday1 = wkday.sort_values('to_sort')
+
+trace01 = go.Bar(x = wkday1['Weekday'],
+                y= wkday1['Mild injuries'],
+                name = "Mild injuries",
+                marker = dict(color='rgb(108, 52, 131)')
+               )
+
+trace11 = go.Bar(x = wkday1['Weekday'],
+                y = wkday1['Serious injuries'],
+                name = "Serious injuries",
+                marker = dict(color='rgb(241, 196, 15)')
+               )
+
+
+data1 = [trace01,trace11]
 
 # mapbox token
 mapbox_accesstoken = 'pk.eyJ1Ijoiam9zdWFjcmlzaGFuIiwiYSI6ImNrdnFmcDlsaTRobzMyd255YjZ1OHNycnUifQ.BWZNmYH2Z-iNl1beZathAQ'
@@ -122,6 +161,33 @@ spatialLayout = html.Div([
                 ])
             ])
         ])
+    ], 
+    className="app-page",
+)
+
+categoricalLayout = html.Div(children=[
+    html.H1(children='Barcelona Accident'),
+    html.Div(children=''''''),
+    dcc.Graph(
+        id='example-graph',
+        figure={
+            'data': [trace0],
+            'layout':
+            go.Layout(xaxis = dict(tickangle=-30),
+                      title='Top Districts Where People Killed and Injured in Accidents', barmode='group',
+                      xaxis_title="District",
+                   yaxis_title="Victims")
+        }),
+    dcc.Graph(
+        id='example-graph',
+        figure={
+            'data': [trace01, trace11],
+            'layout':
+            go.Layout(xaxis = dict(tickangle=-30),
+                      title='Weekday-Wise Accidents in Barcelona', barmode='group',
+                      xaxis_title="Weekday",
+                   yaxis_title="Victims")
+        })
     ], 
     className="app-page",
 )
