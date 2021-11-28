@@ -56,7 +56,9 @@ def display_page(pathname):
     elif pathname.endswith("/spatial"):
         return l.spatialLayout
     elif pathname.endswith("/categorical"):
-        return l.categoricalLayout    
+        return l.categoricalLayout
+    elif pathname.endswith("/hierarchical"):
+        return l.hierarchicalLayout    
     else:
         return l.spatialLayout
 

@@ -1,7 +1,7 @@
 import os
 
 ## App settings
-name = "Barcelona Analytics"
+name = "Barcelona Accidents"
 contacts = "#"
 code = "#"
 google_form = "#"

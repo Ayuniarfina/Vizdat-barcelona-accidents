@@ -48,14 +48,14 @@ def trend_month(df, district, month):
             # temp.sort_values(by=['Month'], inplace=True)
         else:
             temp = df[df['Month']==month]
-            temp = temp[['Day', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Day']).sum().reset_index()
+            temp = temp[['Day', 'Weekday', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Day', 'Weekday']).sum().reset_index()
     else:
         if (month=='All'):
             temp = df[df['District Name']==district]
             temp = temp[['Month', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Month']).sum().reset_index()
         else:
             temp = df[(df['Month']==month) & (df['District Name']==district)]
-            temp = temp[['Day', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Day']).sum().reset_index()
+            temp = temp[['Day', 'Weekday', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Day', 'Weekday']).sum().reset_index()
 
         
         
