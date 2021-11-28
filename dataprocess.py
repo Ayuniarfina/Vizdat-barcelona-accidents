@@ -28,25 +28,15 @@ def trend_year(df):
     # plt.ylabel('Jumlah Kecelakaan')
     # plt.show()
 
-def trend_month(df, district, month):
-    if (district=='All District'):
-        if (month=='All'):
-            temp = df[['Month', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Month']).sum().reset_index()
-            # months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            # temp['Month'] = pd.Categorical(temp['Month'], categories=months, ordered=True)
-            # temp.sort_values(by=['Month'], inplace=True)
-        else:
-            temp = df[df['Month']==month]
-            temp = temp[['Day', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Day']).sum().reset_index()
+def trend_month(df, month):
+    if (month=='All'):
+        temp = df[['Month', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Month']).sum().reset_index()
+        # months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        # temp['Month'] = pd.Categorical(temp['Month'], categories=months, ordered=True)
+        # temp.sort_values(by=['Month'], inplace=True)
     else:
-        if (month=='All'):
-            temp = df[df['District Name']==district]
-            temp = temp[['Month', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Month']).sum().reset_index()
-        else:
-            temp = df[(df['Month']==month) & (df['District Name']==district)]
-            temp = temp[['Day', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Day']).sum().reset_index()
-
-        
+        temp = df[df['Month']==month]
+        temp = temp[['Day', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Day']).sum().reset_index()
         
     temp['total_injuries'] = temp['Mild injuries'] + temp['Serious injuries']
     return temp

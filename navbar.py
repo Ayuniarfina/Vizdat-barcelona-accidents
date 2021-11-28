@@ -56,7 +56,7 @@ def Navbar():
         ## links
         dbc.DropdownMenu(label="Links", nav=True, children=[
             dbc.DropdownMenuItem([html.I(className="fa fa-database"), "  Data Sources"], href=config.contacts, target="_blank"), 
-            dbc.DropdownMenuItem([html.I(className="fa fa-github"), "  Code"], href=config.code, target="_blank"),
+            dbc.DropdownMenuItem([html.I(className="fa fa-github"), "  Code"], href="https://github.com/Ayuniarfina/Vizdat-barcelona-accidents", target="_blank"),
             dbc.DropdownMenuItem([html.I(className="fa fa-google"), "  Google Form"], href=config.google_form, target="_blank")
         ])
     ])

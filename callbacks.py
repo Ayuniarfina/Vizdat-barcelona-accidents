@@ -37,9 +37,11 @@ df_mild = pd.read_csv(DATA_PATH.joinpath("sum_mild_injuries.csv"))
 with open('districtes.geojson') as json_data:
     Barcelona_data = json.load(json_data)
 
-@app.callback(Output('my-graph', 'figure'), [Input('filter-month', 'value')])
-def update_graph(selected_dropdown_value):
-    df_trend = d.trend_month(df, selected_dropdown_value)
+@app.callback(Output('my-graph', 'figure'), 
+            inputs=[Input('district','value'),
+                    Input('filter-month', 'value')])
+def update_graph(district, selected_dropdown_value):
+    df_trend = d.trend_month(df, district, selected_dropdown_value)
     if (selected_dropdown_value=='All'):
         data = r_trend_year(df_trend)
     else:

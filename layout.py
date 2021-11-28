@@ -66,6 +66,12 @@ inputs_district = dbc.Form([
     html.H4("Select District"),
     dcc.Dropdown(id="district", options=[{"label":x,"value":x} for x in np.insert(df_mild.District_Name.unique(), 0, "All District")], value="All District")
 ]) 
+
+inputs_months = dbc.Form([
+    html.H4("Select Month"),
+    dcc.Dropdown(id="filter-month", options=[{'label': i, 'value': i} for i in indicators_month], value="All")
+]) 
+
 inputs_date = dbc.Form([
     html.H4("Select Range Date"),
     dcc.DatePickerRange(
@@ -78,15 +84,21 @@ inputs_date = dbc.Form([
 ]) 
 
 seriesLayout = html.Div([
-    dcc.Dropdown(
-                    id='filter-month',
-                    options=[{'label': i, 'value': i} for i in indicators_month],
-                    value='All'
-                ), 
-        dcc.Graph(
-            id='my-graph')
-    ],
-    className="app-page",
+    dbc.Row([
+        dbc.Col(md=3, children=[
+            inputs_district, 
+            html.Br(),
+
+            inputs_months,
+            # html.Br(),html.Br()
+        ]),
+
+        dbc.Col(md=9, children=[
+            dcc.Graph(id='my-graph')
+            ])
+    ])
+],
+className="app-page",
 ) 
 
 spatialLayout = html.Div([ 
