@@ -72,6 +72,23 @@ trace11 = go.Bar(x = wkday1['Weekday'],
 
 data1 = [trace01,trace11]
 
+dff = df.groupby('District Name', as_index=False)[['Mild injuries','Serious injuries']].sum()
+
+options = df['District Name'].unique()
+trace11 = go.Bar(
+			y=dff['District Name'],  
+			x=dff['Mild injuries'],
+			orientation='h',
+			name = 'Mild Injury',
+			marker=dict(color='#FFD700'))
+trace21 = go.Bar(
+				y=dff['District Name'],
+				x=dff['Serious injuries'],
+				orientation='h',
+				name='Serious Injury',
+				marker=dict(color='Crimson'))
+data2 = [trace11, trace21]
+
 # mapbox token
 mapbox_accesstoken = 'pk.eyJ1Ijoiam9zdWFjcmlzaGFuIiwiYSI6ImNrdnFmcDlsaTRobzMyd255YjZ1OHNycnUifQ.BWZNmYH2Z-iNl1beZathAQ'
 
@@ -189,6 +206,50 @@ categoricalLayout = html.Div(children=[
                    yaxis_title="Victims")
         })
     ], 
+    className="app-page",
+)
+
+hierarchicalLayout = html.Div([
+    html.H1('Accident Record Dashboard'),
+    html.Div([
+        html.H3('Select Distric Name:', style={'paddingRight':'30px'}),
+        dcc.Dropdown(
+            id='my_ticker_symbol',
+            options=[
+                {'label': i, 'value': i} for i in options],
+            value=['Sant Martí'],
+            multi=False
+        )
+    ], style={'display':'inline-block', 'verticalAlign':'top', 'width':'30%'}),
+    html.Div([
+        html.H3('Select start and end dates:'),
+        dcc.DatePickerRange(
+            id='my_date_picker',
+            min_date_allowed=datetime(2017, 1, 1),
+            max_date_allowed=datetime(2018, 1, 1),
+            start_date=datetime(2017, 1, 1),
+            end_date=datetime(2018, 1, 1)
+        )
+    ], style={'display':'inline-block'}),
+    html.Div([
+        html.Button(
+            id='submit-button',
+            n_clicks=0,
+            children='Submit',
+            style={'fontSize':24, 'marginLeft':'30px'}
+        ),
+    ], style={'display':'inline-block'}),
+    dcc.Graph(
+        id='my_graph1',
+        figure={
+            'data': data2,
+            'layout': go.Layout(
+                title = 'Accident Record based on District',
+                barmode='stack'
+            )
+        }
+    ),
+],
     className="app-page",
 )
 
