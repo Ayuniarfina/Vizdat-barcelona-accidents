@@ -42,36 +42,43 @@ with open('districtes.geojson') as json_data:
 @app.callback(Output('my-graph', 'figure'), 
             inputs=[Input('district','value'),
                     Input('filter-month', 'value')])
-def update_graph(district, selected_dropdown_value):
-    df_trend = d.trend_month(df, district, selected_dropdown_value)
-    if (selected_dropdown_value=='All'):
-        data = r_trend_year(df_trend)
+def update_graph(district, month):
+    df_trend = d.trend_month(df, district, month)
+    if (month=='All'):
+        data = r_trend_year(df_trend, district)
     else:
-        data = r_trend_month(df_trend)
+        data = r_trend_month(df_trend, district, month)
     
     return data
 
-def r_trend_year(df_):
-    return {
-        'data': [go.Scatter(
-            x=df_['Month'],
-            y=df_['total_injuries'],
-            mode='lines+markers',
-        )]
-        # 'layout': {'margin': {'l': 40, 'r': 0, 't': 20, 'b': 30}
-        
-    }
+def r_trend_year(df_, district):
+    fig = px.line(df_,
+                x=df_['Month'],
+                y=df_['total_injuries'],
+                title= '<b>Total Accidents ' + district + ' 2017</b>'
+    )
 
-def r_trend_month(df_):
-    return {
-        'data': [go.Scatter(
-            x=df_['Day'],
-            y=df_['total_injuries'],
-            mode='lines+markers'
-        )]
-        # 'layout': {'margin': {'l': 40, 'r': 0, 't': 20, 'b': 30}
-        
-    }
+    fig.update_layout(plot_bgcolor='white', margin={"r":0,"t":60,"l":0,"b":0}, xaxis_title="Month",
+                        yaxis_title="Total Accidents")
+
+    fig.update_traces(mode='lines+markers', line_color='#cc0000')  
+
+    return fig
+
+def r_trend_month(df_, district, month):
+    fig = px.line(df_,
+                x=df_['Day'],
+                y=df_['total_injuries'],
+                hover_name=df_['Weekday'],
+                title='<b>Total Accidents ' + district + ' ' + month + ' 2017</b>' 
+    )
+
+    fig.update_layout(plot_bgcolor='white', margin={"r":0,"t":60,"l":0,"b":0}, xaxis_title="Day",
+                        yaxis_title="Total Accidents",) 
+
+    fig.update_traces(mode='lines+markers', line_color='#cc0000')  
+    
+    return fig
 
 @app.callback(
     output=[Output("plot-mild","figure"), 
