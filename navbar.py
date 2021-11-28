@@ -15,7 +15,7 @@ def Navbar():
         dbc.NavItem(html.Img(src=app.get_asset_url("/static/logo.PNG"), height="40px")),
         ## Categorical
         dbc.NavItem(html.Div([
-            dbc.NavLink("Categorical", href="/", className="tab")
+            dbc.NavLink("Categorical", href=f"{app_name}/categorical", className="tab")
             # ,
             # dbc.Popover(id="about", is_open=False, target="about-popover", children=[
             #     dbc.PopoverHeader("How it works"), dbc.PopoverBody()
@@ -39,7 +39,7 @@ def Navbar():
         ])),
         ## Hierarchical
         dbc.NavItem(html.Div([
-            dbc.NavLink("Hierarchical", href="/", active=False)
+            dbc.NavLink("Hierarchical", href=f"{app_name}/hierarchical", active=False)
             # ,
             # dbc.Popover(id="about", is_open=False, target="about-popover", children=[
             #     dbc.PopoverHeader("How it works"), dbc.PopoverBody()

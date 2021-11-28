@@ -95,7 +95,7 @@ seriesLayout = html.Div([
 
         dbc.Col(md=9, children=[
             dcc.Graph(id='my-graph')
-            ])
+        ])
     ])
 ],
 className="app-page",
@@ -125,3 +125,5 @@ spatialLayout = html.Div([
     ], 
     className="app-page",
 )
+
+
