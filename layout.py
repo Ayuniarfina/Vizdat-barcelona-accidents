@@ -184,7 +184,7 @@ spatialLayout = html.Div([
 )
 
 categoricalLayout = html.Div(children=[
-    html.H1(children='Barcelona Accident'),
+    # html.H1(children='Barcelona Accident'),
     html.Div(children=''''''),
     dcc.Graph(
         id='example-graph',
