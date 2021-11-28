@@ -11,6 +11,17 @@ def praprocess(df):
     df['year'] = 2017
     df['Date'] = pd.to_datetime(df[['year', 'month', 'Day']])
     
+    index_names = df[ df['District Name'] == 'Unknown' ].index
+  
+    # drop these row indexes
+    # from dataFrame
+    df.drop(index_names, inplace = True)
+    df = df.replace('Sant Martí','Sant Marti')
+    df = df.replace('Sants-Montjuïc','Sants-Montjuic')
+    df = df.replace('Sarrià-Sant Gervasi','Sarria-Sant Gervasi')
+    df = df.replace('Gràcia','Gracia')
+    df = df.replace('Horta-Guinardó','Horta-Guinardo')
+
     return df
 
 def trend_year(df):    

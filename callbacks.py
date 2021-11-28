@@ -54,7 +54,7 @@ def r_trend_year(df_):
         'data': [go.Scatter(
             x=df_['Month'],
             y=df_['total_injuries'],
-            mode='lines+markers'
+            mode='lines+markers',
         )]
         # 'layout': {'margin': {'l': 40, 'r': 0, 't': 20, 'b': 30}
         
