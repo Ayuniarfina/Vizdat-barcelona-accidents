@@ -259,9 +259,12 @@ def update_graph(n_clicks, stock_ticker, start_date, end_date):
     fig = {
         'data': data,
         'layout': go.Layout(
+                margin={"l":250},# "r":50, "b":50, "t":50},
+                #xaxis_range=[-1.0e5, 1.3e5],
                 title='Accident Record in '+stock_ticker,
                 barmode='stack'
         )
     }
+    
 
     return fig
