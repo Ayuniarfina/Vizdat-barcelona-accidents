@@ -22,6 +22,7 @@ DATA_PATH = PATH.joinpath("data").resolve()
 
 df = pd.read_csv(DATA_PATH.joinpath("accidents_2017.csv"))
 df = data.praprocess(df)
+dfBar = pd.read_csv(DATA_PATH.joinpath("new_accidents_2017.csv"))
 
 # fig = px.line(df_year, x="Month", y=['Mild injuries', 'Serious injuries', 'Victims'])
 
@@ -73,22 +74,32 @@ trace11 = go.Bar(x = wkday1['Weekday'],
 
 data1 = [trace01,trace11]
 
-dff = df.groupby('District Name', as_index=False)[['Mild injuries','Serious injuries']].sum()
+dff = dfBar.groupby('District_Name', as_index=False)[['Mild_injuries','Serious_injuries']].sum()
 
-options = df['District Name'].unique()
-trace11 = go.Bar(
-			y=dff['District Name'],  
-			x=dff['Mild injuries'],
-			orientation='h',
-			name = 'Mild Injury',
-			marker=dict(color='#FFD700'))
-trace21 = go.Bar(
-				y=dff['District Name'],
-				x=dff['Serious injuries'],
-				orientation='h',
-				name='Serious Injury',
-				marker=dict(color='Crimson'))
-data2 = [trace11, trace21]
+options1 = ["All District"]
+for tic in dfBar['District_Name'].unique():
+    options1.append(tic)
+	
+trace1all = go.Bar(
+                y=dff['District_Name'],  
+                x=dff['Mild_injuries'],
+                orientation='h',
+                name = 'Mild Injury',
+                marker=dict(
+                    color='rgba(50, 171, 96, 0.6)',
+                    line=dict(
+                        color='rgba(50, 171, 96, 1.0)',
+                        width=1),))
+trace2all = go.Bar(
+                y=dff['District_Name'],
+                x=dff['Serious_injuries'],
+                orientation='h',
+                name='Serious Injury',
+                marker=dict(color='Crimson',
+                        line=dict(
+                            color='Crimson',
+                        width=1),))
+data_all = [trace1all, trace2all]
 
 # mapbox token
 mapbox_accesstoken = 'pk.eyJ1Ijoiam9zdWFjcmlzaGFuIiwiYSI6ImNrdnFmcDlsaTRobzMyd255YjZ1OHNycnUifQ.BWZNmYH2Z-iNl1beZathAQ'
@@ -124,6 +135,15 @@ inputs_district = dbc.Form([
     dcc.Dropdown(id="district", options=[{"label":x,"value":x} for x in np.insert(df_mild.District_Name.unique(), 0, "All District")], value="All District")
 ]) 
 
+inputs_district2 = dbc.Form([
+                    html.H4("Select District"),
+                    dcc.Dropdown(id="my_ticker_symbol",
+                    options=[
+                        {'label': i, 'value': i} for i in options1],
+                    value='All District',
+                    multi=False
+                )])
+
 inputs_months = dbc.Form([
     html.H4("Select Month"),
     dcc.Dropdown(id="filter-month", options=[{'label': i, 'value': i} for i in indicators_month], value="All")
@@ -139,6 +159,17 @@ inputs_date = dbc.Form([
         end_date=df.Date.max().date(),
     )
 ]) 
+
+inputs_date2 = dbc.Form([
+                    html.H4("Select Range Date"),
+                    dcc.DatePickerRange(
+                        id='my_date_picker',
+                        min_date_allowed=datetime(2017, 1, 1),
+                        max_date_allowed=datetime(2017, 12, 31),
+                        start_date=datetime(2017, 1, 1),
+                        end_date=datetime(2017, 12, 31)
+                    )
+                ])
 
 seriesLayout = html.Div([
     dbc.Row([
@@ -183,6 +214,56 @@ spatialLayout = html.Div([
     className="app-page",
 )
 
+# hierarchicalLayout = html.Div([ 
+    # dbc.Row([
+            # dbc.Col(md=3, children=[
+                # inputs_district, 
+                # html.Br(),
+
+                # inputs_date,
+                # html.Br(),html.Br(),
+                
+            # ]),
+			# dbc.Col(md=9, children=[
+            # dcc.Graph(id='hgraph')
+			# ])
+        # ])
+    # ], 
+# className="app-page",
+# )
+hierarchicalLayout = html.Div([
+    dbc.Row([
+            dbc.Col(md=3, children=[
+                inputs_district2, 
+                html.Br(),
+
+                inputs_date2,
+                html.Br(),html.Br(),
+                
+                html.Div([
+                    html.Button(
+                        id='submit-button',
+                        n_clicks=0,
+                        children='Submit',
+                        # style={'fontSize':24, 'marginLeft':'30px'}
+                    ),
+                ], #style={'display':'inline-block'}),
+                ),
+            ]),
+			dbc.Col(md=9, children=[
+            dcc.Graph(
+                id='my_graph1',
+                figure={'data': data_all,
+                        'layout': go.Layout(
+                        title = 'Accident Record based on District',
+                        barmode='stack')})
+			])
+        ])
+    ], 
+className="app-page",
+)
+
+
 categoricalLayout = html.Div(children=[
     # html.H1(children='Barcelona Accident'),
     html.Div(children=''''''),
@@ -210,48 +291,6 @@ categoricalLayout = html.Div(children=[
     className="app-page",
 )
 
-hierarchicalLayout = html.Div([
-    html.H1('Accident Record Dashboard'),
-    html.Div([
-        html.H3('Select Distric Name:', style={'paddingRight':'30px'}),
-        dcc.Dropdown(
-            id='my_ticker_symbol',
-            options=[
-                {'label': i, 'value': i} for i in options],
-            value=['Sant Martí'],
-            multi=False
-        )
-    ], style={'display':'inline-block', 'verticalAlign':'top', 'width':'30%'}),
-    html.Div([
-        html.H3('Select start and end dates:'),
-        dcc.DatePickerRange(
-            id='my_date_picker',
-            min_date_allowed=datetime(2017, 1, 1),
-            max_date_allowed=datetime(2018, 1, 1),
-            start_date=datetime(2017, 1, 1),
-            end_date=datetime(2018, 1, 1)
-        )
-    ], style={'display':'inline-block'}),
-    html.Div([
-        html.Button(
-            id='submit-button',
-            n_clicks=0,
-            children='Submit',
-            style={'fontSize':24, 'marginLeft':'30px'}
-        ),
-    ], style={'display':'inline-block'}),
-    dcc.Graph(
-        id='my_graph1',
-        figure={
-            'data': data2,
-            'layout': go.Layout(
-                title = 'Accident Record based on District',
-                barmode='stack'
-            )
-        }
-    ),
-],
-    className="app-page",
-)
+
 
 

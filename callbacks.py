@@ -32,9 +32,11 @@ df = pd.read_csv(DATA_PATH.joinpath("accidents_2017.csv"))
 df = d.praprocess(df)
 
 data = pd.read_csv(DATA_PATH.joinpath("new_accidents_2017.csv"))
+dfBar = data
 data["Date"] = pd.to_datetime(data["Date"], format="%Y-%m-%d")
 data.sort_values("Date", inplace=True)
 df_mild = pd.read_csv(DATA_PATH.joinpath("sum_mild_injuries.csv"))
+
 
 with open('districtes.geojson') as json_data:
     Barcelona_data = json.load(json_data)
@@ -205,29 +207,53 @@ def plot_mild_cases(district, start_date, end_date):
 @app.callback(
     Output('my_graph1', 'figure'),
     [Input('submit-button', 'n_clicks')],
-    [State('my_ticker_symbol', 'value')])
-    # State('my_date_picker', 'start_date'),
-    # State('my_date_picker', 'end_date')])
-def update_graph(n_clicks, stock_ticker):
-    # start = datetime.strptime(start_date[:10], '%Y-%m-%d')
-    # end = datetime.strptime(end_date[:10], '%Y-%m-%d')
+    [State('my_ticker_symbol', 'value'),
+    State('my_date_picker', 'start_date'),
+    State('my_date_picker', 'end_date')])
+def update_graph(n_clicks, stock_ticker, start_date, end_date):
+    df_timeline = dfBar.loc[((dfBar['Date'] >= start_date)&(dfBar['Date'] <= end_date))]
     
-    dfNew = df[df['District Name'] == stock_ticker]
-    dff = dfNew.groupby('Neighborhood Name', as_index=False)[['Mild injuries','Serious injuries']].sum()
-    
-    trace1 = go.Bar(
-                y=dff['Neighborhood Name'],  
-                x=dff['Mild injuries'],
+    if stock_ticker == "All District" :
+        dff = df_timeline.groupby('District_Name', as_index=False)[['Mild_injuries','Serious_injuries']].sum()
+        trace1 = go.Bar(
+                y=dff['District_Name'],  
+                x=dff['Mild_injuries'],
                 orientation='h',
                 name = 'Mild Injury',
-                marker=dict(color='#FFD700'))
-
-    trace2 = go.Bar(
-                y=dff['Neighborhood Name'],
-                x=dff['Serious injuries'],
+                marker=dict(
+                    color='rgba(50, 171, 96, 0.6)',
+                    line=dict(
+                        color='rgba(50, 171, 96, 1.0)',
+                        width=1),))
+        trace2 = go.Bar(
+                y=dff['District_Name'],
+                x=dff['Serious_injuries'],
                 orientation='h',
                 name='Serious Injury',
-                marker=dict(color='Crimson'))
+                marker=dict(color='Crimson',
+                        line=dict(
+                            color='Crimson',
+                        width=1),))
+    else :
+        dfNew = df_timeline[df_timeline['District_Name'] == stock_ticker]
+        dff = dfNew.groupby('Neighborhood_Name', as_index=False)[['Mild_injuries','Serious_injuries']].sum()
+        
+        trace1 = go.Bar(
+                    y=dff['Neighborhood_Name'],  
+                    x=dff['Mild_injuries'],
+                    orientation='h',
+                    name = 'Mild Injury',
+                    marker=dict(color='#FFD700'))
+    
+        trace2 = go.Bar(
+                    y=dff['Neighborhood_Name'],
+                    x=dff['Serious_injuries'],
+                    orientation='h',
+                    name='Serious Injury',
+                    marker=dict(color='Crimson'))
+        
+        
+                            
     data = [trace1, trace2]
     
     fig = {
