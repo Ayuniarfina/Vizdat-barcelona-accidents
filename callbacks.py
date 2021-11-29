@@ -205,12 +205,18 @@ def plot_mild_cases(district, start_date, end_date):
     return fig1, fig2, panel
 
 @app.callback(
+    # Output('my_graph1', 'figure'),
+    # [Input('submit-button', 'n_clicks')],
+    # [State('my_ticker_symbol', 'value'),
+    # State('my_date_picker', 'start_date'),
+    # State('my_date_picker', 'end_date')])
+
     Output('my_graph1', 'figure'),
-    [Input('submit-button', 'n_clicks')],
-    [State('my_ticker_symbol', 'value'),
-    State('my_date_picker', 'start_date'),
-    State('my_date_picker', 'end_date')])
-def update_graph(n_clicks, stock_ticker, start_date, end_date):
+    [Input('my_ticker_symbol', 'value'),
+    Input('my_date_picker', 'start_date'),
+    Input('my_date_picker', 'end_date')])
+def update_graph(stock_ticker, start_date, end_date):
+#def update_graph(n_clicks, stock_ticker, start_date, end_date):
     df_timeline = dfBar.loc[((dfBar['Date'] >= start_date)&(dfBar['Date'] <= end_date))]
     
     if stock_ticker == "All District" :
@@ -259,7 +265,7 @@ def update_graph(n_clicks, stock_ticker, start_date, end_date):
     fig = {
         'data': data,
         'layout': go.Layout(
-                margin={"l":250},# "r":50, "b":50, "t":50},
+                margin={"l":300},# "r":50, "b":50, "t":50},
                 #xaxis_range=[-1.0e5, 1.3e5],
                 title='Accident Record in '+stock_ticker,
                 barmode='stack'

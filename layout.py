@@ -240,15 +240,15 @@ hierarchicalLayout = html.Div([
                 inputs_date2,
                 html.Br(),html.Br(),
                 
-                html.Div([
-                    html.Button(
-                        id='submit-button',
-                        n_clicks=0,
-                        children='Submit',
-                        # style={'fontSize':24, 'marginLeft':'30px'}
-                    ),
-                ], #style={'display':'inline-block'}),
-                ),
+                # html.Div([
+                    # html.Button(
+                        # id='submit-button',
+                        # n_clicks=0,
+                        # children='Submit',
+                        #style={'fontSize':24, 'marginLeft':'30px'}
+                    # ),
+                # ], #style={'display':'inline-block'}),
+                # ),
             ]),
 			dbc.Col(md=9, children=[
             dcc.Graph(
