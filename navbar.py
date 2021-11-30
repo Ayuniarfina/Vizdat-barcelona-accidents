@@ -45,19 +45,11 @@ def Navbar():
             #     dbc.PopoverHeader("How it works"), dbc.PopoverBody()
             # ])
         ])),
-        ## about
-        dbc.NavItem(html.Div([
-            dbc.NavLink("About", href="/", active=False)
-            # ,
-            # dbc.Popover(id="about", is_open=False, target="about-popover", children=[
-            #     dbc.PopoverHeader("How it works"), dbc.PopoverBody()
-            # ])
-        ])),
         ## links
         dbc.DropdownMenu(label="Links", nav=True, children=[
             dbc.DropdownMenuItem([html.I(className="fa fa-database"), "  Data Sources"], href="https://www.kaggle.com/xvivancos/barcelona-data-sets", target="_blank"), 
             dbc.DropdownMenuItem([html.I(className="fa fa-github"), "  Code"], href="https://github.com/Ayuniarfina/Vizdat-barcelona-accidents", target="_blank"),
-            dbc.DropdownMenuItem([html.I(className="fa fa-google"), "  Google Form"], href=config.google_form, target="_blank")
+            dbc.DropdownMenuItem([html.I(className="fa fa-google"), "  Google Form"], href="https://docs.google.com/forms/d/e/1FAIpQLSefti91PgTJYOIFz2VhJYDAPnWxZBT70MDj27nrmVhAREYVgg/viewform", target="_blank")
         ])
     ])
     return nav
