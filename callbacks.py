@@ -249,7 +249,11 @@ def update_graph(stock_ticker, start_date, end_date):
                     x=dff['Mild_injuries'],
                     orientation='h',
                     name = 'Mild Injury',
-                    marker=dict(color='#FFD700'))
+                    marker=dict(
+                    color='rgba(50, 171, 96, 0.6)',
+                    line=dict(
+                        color='rgba(50, 171, 96, 1.0)',
+                        width=1),))
     
         trace2 = go.Bar(
                     y=dff['Neighborhood_Name'],
