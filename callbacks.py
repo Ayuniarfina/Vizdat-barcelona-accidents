@@ -20,7 +20,7 @@ import pandas as pd
 import pathlib as pl
 import plotly.express as px
 import json
-
+import numpy as np
 
 # Import custom data.py
 import data as d
@@ -204,24 +204,21 @@ def plot_mild_cases(district, start_date, end_date):
         
     return fig1, fig2, panel
 
-@app.callback(
-    # Output('my_graph1', 'figure'),
-    # [Input('submit-button', 'n_clicks')],
-    # [State('my_ticker_symbol', 'value'),
-    # State('my_date_picker', 'start_date'),
-    # State('my_date_picker', 'end_date')])
+dff = dfBar.groupby('District_Name', as_index=False)[['Mild_injuries','Serious_injuries']].sum()
 
-    Output('my_graph1', 'figure'),
-    [Input('my_ticker_symbol', 'value'),
-    Input('my_date_picker', 'start_date'),
-    Input('my_date_picker', 'end_date')])
-def update_graph(stock_ticker, start_date, end_date):
-#def update_graph(n_clicks, stock_ticker, start_date, end_date):
-    df_timeline = dfBar.loc[((dfBar['Date'] >= start_date)&(dfBar['Date'] <= end_date))]
-    
-    if stock_ticker == "All District" :
-        dff = df_timeline.groupby('District_Name', as_index=False)[['Mild_injuries','Serious_injuries']].sum()
-        trace1 = go.Bar(
+trace0all = go.Bar(
+                y=dff['District_Name'],  
+                x=np.ones(dff['District_Name'].size),
+                xperiodalignment="start",
+                orientation='h',
+                name = 'Mild Injury',
+                marker=dict(
+                    color='rgba(0, 0, 0, 0)',
+                    line=dict(
+                        color='rgba(0, 0, 0, 0)',
+                        width=1),))
+
+trace1all = go.Bar(
                 y=dff['District_Name'],  
                 x=dff['Mild_injuries'],
                 orientation='h',
@@ -231,7 +228,7 @@ def update_graph(stock_ticker, start_date, end_date):
                     line=dict(
                         color='rgba(50, 171, 96, 1.0)',
                         width=1),))
-        trace2 = go.Bar(
+trace2all = go.Bar(
                 y=dff['District_Name'],
                 x=dff['Serious_injuries'],
                 orientation='h',
@@ -240,41 +237,140 @@ def update_graph(stock_ticker, start_date, end_date):
                         line=dict(
                             color='Crimson',
                         width=1),))
-    else :
-        dfNew = df_timeline[df_timeline['District_Name'] == stock_ticker]
-        dff = dfNew.groupby('Neighborhood_Name', as_index=False)[['Mild_injuries','Serious_injuries']].sum()
+data_all = [trace1all, trace2all]
+
+@app.callback(
+    Output('my_graph1', 'figure'),
+    [Input('my_ticker_symbol', 'value'),
+    Input('my_date_picker', 'start_date'),
+    Input('filter_check', 'value'),
+    Input('my_date_picker', 'end_date')])
+def update_graph(stock_ticker, start_date, selected_case, end_date):
+    # df_timeline = dfBar.loc[((dfBar['Date'] >= start_date)&(dfBar['Date'] <= end_date))]
+    
+    # if stock_ticker == "All District" :
+        # dff = df_timeline.groupby('District_Name', as_index=False)[['Mild_injuries','Serious_injuries']].sum()
+        # trace1 = go.Bar(
+                # y=dff['District_Name'],  
+                # x=dff['Mild_injuries'],
+                # orientation='h',
+                # name = 'Mild Injury',
+                # marker=dict(
+                    # color='rgba(50, 171, 96, 0.6)',
+                    # line=dict(
+                        # color='rgba(50, 171, 96, 1.0)',
+                        # width=1),))
+        # trace2 = go.Bar(
+                # y=dff['District_Name'],
+                # x=dff['Serious_injuries'],
+                # orientation='h',
+                # name='Serious Injury',
+                # marker=dict(color='Crimson',
+                        # line=dict(
+                            # color='Crimson',
+                        # width=1),))
+    # else :
+        # dfNew = df_timeline[df_timeline['District_Name'] == stock_ticker]
+        # dff = dfNew.groupby('Neighborhood_Name', as_index=False)[['Mild_injuries','Serious_injuries']].sum()
         
-        trace1 = go.Bar(
-                    y=dff['Neighborhood_Name'],  
-                    x=dff['Mild_injuries'],
-                    orientation='h',
-                    name = 'Mild Injury',
-                    marker=dict(
+        
+        # trace1 = go.Bar(
+                    # y=dff['Neighborhood_Name'],  
+                    # x=dff['Mild_injuries'],
+                    # orientation='h',
+                    # name = 'Mild Injury',
+                    # marker=dict(
+                    # color='rgba(50, 171, 96, 0.6)',
+                    # line=dict(
+                        # color='rgba(50, 171, 96, 1.0)',
+                        # width=1),))
+    
+        # trace2 = go.Bar(
+                    # y=dff['Neighborhood_Name'],
+                    # x=dff['Serious_injuries'],
+                    # orientation='h',
+                    # name='Serious Injury',
+                    # marker=dict(color='Crimson'))
+        
+        
+                            
+    # data = [trace1, trace2]
+    
+    # fig = {
+        # 'data': data,
+        # 'layout': go.Layout(
+                # margin={"l":300},# "r":50, "b":50, "t":50},
+                # #xaxis_range=[-1.0e5, 1.3e5],
+                # title='Accident Record in '+stock_ticker,
+                # barmode='stack'
+        # )
+    # }
+    
+
+    # return fig
+    df_timeline = dfBar.loc[((dfBar['Date'] >= start_date) & (dfBar['Date'] <= end_date))]
+    dfNew = df_timeline[df_timeline['District_Name'] == stock_ticker]
+    dff = dfNew.groupby('Neighborhood_Name', as_index=False)[['Mild_injuries','Serious_injuries']].sum()
+    
+    
+    trace0 = go.Bar(
+                y=dff['Neighborhood_Name'],  
+                x=np.ones(dff['Neighborhood_Name'].size),
+                orientation='h',
+                xperiodalignment="start",
+                yperiodalignment="start",
+                marker=dict(
+                    color='rgba(0, 0, 0, 0)',
+                    line=dict(
+                        color='rgba(0, 0, 0, 0)',
+                        width=1),))
+    
+
+    
+    trace1 = go.Bar(
+                y=dff['Neighborhood_Name'],  
+                x=dff['Mild_injuries'],
+                orientation='h',
+                name = 'Mild Injury',
+                marker=dict(
                     color='rgba(50, 171, 96, 0.6)',
                     line=dict(
                         color='rgba(50, 171, 96, 1.0)',
                         width=1),))
+
+    trace2 = go.Bar(
+                y=dff['Neighborhood_Name'],
+                x=dff['Serious_injuries'],
+                orientation='h',
+                name='Serious Injury',
+                marker=dict(color='Crimson',
+                line=dict(
+                        color='Crimson',
+                        width=1),))
     
-        trace2 = go.Bar(
-                    y=dff['Neighborhood_Name'],
-                    x=dff['Serious_injuries'],
-                    orientation='h',
-                    name='Serious Injury',
-                    marker=dict(color='Crimson'))
-        
-        
-                            
-    data = [trace1, trace2]
+    
+    if stock_ticker == "All District" :
+        trace0 = trace0all
+        trace1 = trace1all
+        trace2 = trace2all
+    
+    data = []   
+    
+    if selected_case :  
+        if 'MLD' in selected_case:
+            data.append(trace1)
+        if 'SRS' in selected_case:
+            data.append(trace2)
+    else :
+        data = [trace0]         
     
     fig = {
         'data': data,
         'layout': go.Layout(
-                margin={"l":300},# "r":50, "b":50, "t":50},
-                #xaxis_range=[-1.0e5, 1.3e5],
-                title='Accident Record in '+stock_ticker,
-                barmode='stack'
+                title='Accident Record in '+stock_ticker+ " from "+str(start_date),
+                barmode='stack',
+                margin=dict(l=200)
         )
     }
-    
 
     return fig

@@ -244,6 +244,7 @@ hierarchicalLayout = html.Div([
                 inputs_date2,
                 html.Br(),html.Br(),
                 
+
                 # html.Div([
                     # html.Button(
                         # id='submit-button',
@@ -253,6 +254,12 @@ hierarchicalLayout = html.Div([
                     # ),
                 # ], #style={'display':'inline-block'}),
                 # ),
+            dcc.Checklist(id='filter_check', options=[
+            {'label': 'Mild Injury', 'value': 'MLD'},
+            {'label': 'Serious Injury', 'value': 'SRS'}
+            ],
+                value=['MLD','SRS'],
+                labelStyle={'display': 'inline-block'})
             ]),
 			dbc.Col(md=9, children=[
             dcc.Graph(
@@ -261,7 +268,8 @@ hierarchicalLayout = html.Div([
                         'layout': go.Layout(
                         title = 'Accident Record based on District',
                         barmode='stack')})
-			])
+			]),
+
         ])
     ], 
 className="app-page",
