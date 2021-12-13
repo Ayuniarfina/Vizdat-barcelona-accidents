@@ -10,20 +10,7 @@ def praprocess(df):
     df.sort_values(by=['Month'], inplace=True)
     df['year'] = 2017
     df['Date'] = pd.to_datetime(df[['year', 'month', 'Day']])
-    daynum = {'Monday':0, 'Tuesday':1, 'Wednesday':2, 'Thursday':3, 'Friday':4, 'Saturday':5, 'Sunday':6}
-    df['dayNum'] = df['Weekday'].map(daynum)
     
-    index_names = df[ df['District Name'] == 'Unknown' ].index
-  
-    # drop these row indexes
-    # from dataFrame
-    df.drop(index_names, inplace = True)
-    df = df.replace('Sant Martí','Sant Marti')
-    df = df.replace('Sants-Montjuïc','Sants-Montjuic')
-    df = df.replace('Sarrià-Sant Gervasi','Sarria-Sant Gervasi')
-    df = df.replace('Gràcia','Gracia')
-    df = df.replace('Horta-Guinardó','Horta-Guinardo')
-
     return df
 
 def trend_year(df):    
@@ -41,25 +28,15 @@ def trend_year(df):
     # plt.ylabel('Jumlah Kecelakaan')
     # plt.show()
 
-def trend_month(df, district, month):
-    if (district=='All District'):
-        if (month=='All'):
-            temp = df[['Month', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Month']).sum().reset_index()
-            # months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            # temp['Month'] = pd.Categorical(temp['Month'], categories=months, ordered=True)
-            # temp.sort_values(by=['Month'], inplace=True)
-        else:
-            temp = df[df['Month']==month]
-            temp = temp[['Day', 'Weekday', 'Date', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Day', 'Weekday', 'Date']).sum().reset_index()
+def trend_month(df, month):
+    if (month=='All'):
+        temp = df[['Month', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Month']).sum().reset_index()
+        # months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        # temp['Month'] = pd.Categorical(temp['Month'], categories=months, ordered=True)
+        # temp.sort_values(by=['Month'], inplace=True)
     else:
-        if (month=='All'):
-            temp = df[df['District Name']==district]
-            temp = temp[['Month', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Month']).sum().reset_index()
-        else:
-            temp = df[(df['Month']==month) & (df['District Name']==district)]
-            temp = temp[['Day', 'Weekday', 'Date', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Day', 'Weekday', 'Date']).sum().reset_index()
-
-        
+        temp = df[df['Month']==month]
+        temp = temp[['Day', 'Mild injuries', 'Serious injuries', 'Victims']].groupby(['Day']).sum().reset_index()
         
     temp['total_injuries'] = temp['Mild injuries'] + temp['Serious injuries']
     return temp

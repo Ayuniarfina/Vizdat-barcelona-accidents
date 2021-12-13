@@ -62,6 +62,8 @@ def r_trend_year(df_, district):
 
     fig.update_layout(plot_bgcolor='white', margin={"r":0,"t":60,"l":0,"b":0}, xaxis_title="Month",
                         yaxis_title="Total Accidents")
+    fig.update_xaxes(showgrid=False, gridwidth=1, gridcolor='rgba(0,0,255,0.1)')
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,255,0.1)')
 
     fig.update_traces(mode='lines+markers', line_color='#cc0000')  
 
@@ -69,7 +71,7 @@ def r_trend_year(df_, district):
 
 def r_trend_month(df_, district, month):
     fig = px.line(df_,
-                x=df_['Day'],
+                x=df_['Date'],
                 y=df_['total_injuries'],
                 hover_name=df_['Weekday'],
                 title='<b>Total Accidents ' + district + ' ' + month + ' 2017</b>' 
@@ -77,8 +79,25 @@ def r_trend_month(df_, district, month):
 
     fig.update_layout(plot_bgcolor='white', margin={"r":0,"t":60,"l":0,"b":0}, xaxis_title="Day",
                         yaxis_title="Total Accidents",) 
+    fig.update_xaxes(showgrid=False, gridwidth=1, gridcolor='rgba(0,0,255,0.1)')
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(0,0,255,0.1)')
 
     fig.update_traces(mode='lines+markers', line_color='#cc0000')  
+
+    for index, row in df_.iterrows():
+        if row['Date'].weekday() == 5 : #or row['date'].weekday() == 6:
+            fig.add_shape(type="rect",
+                            xref="x",
+                            yref="paper",
+                            x0=row['Date'],
+                            y0=0,
+    #                         x1=row['date'],
+                            x1=row['Date'] + pd.DateOffset(1),
+                            y1=1,
+                            line=dict(color="rgba(0,0,0,0)",width=5,),
+                            fillcolor="rgba(0,0,0,0.1)",
+                            layer='below') 
+ 
     
     return fig
 
