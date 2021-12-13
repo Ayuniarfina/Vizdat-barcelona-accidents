@@ -61,14 +61,18 @@ wkday1 = wkday.sort_values('to_sort')
 
 trace01 = go.Bar(x = wkday1['Weekday'],
                 y= wkday1['Mild injuries'],
+		text=wkday1['Mild injuries'],
+		textposition='auto',
                 name = "Mild injuries",
-                marker = dict(color='rgb(108, 52, 131)')
+                marker = dict(color='rgb(50, 171, 96, 1.0)')
                )
 
 trace11 = go.Bar(x = wkday1['Weekday'],
                 y = wkday1['Serious injuries'],
+		text=wkday1['Serious injuries'],
+		textposition='auto',
                 name = "Serious injuries",
-                marker = dict(color='rgb(241, 196, 15)')
+                marker = dict(color='Crimson')
                )
 
 
@@ -240,6 +244,7 @@ hierarchicalLayout = html.Div([
                 inputs_date2,
                 html.Br(),html.Br(),
                 
+
                 # html.Div([
                     # html.Button(
                         # id='submit-button',
@@ -249,6 +254,12 @@ hierarchicalLayout = html.Div([
                     # ),
                 # ], #style={'display':'inline-block'}),
                 # ),
+            dcc.Checklist(id='filter_check', options=[
+            {'label': 'Mild Injury', 'value': 'MLD'},
+            {'label': 'Serious Injury', 'value': 'SRS'}
+            ],
+                value=['MLD','SRS'],
+                labelStyle={'display': 'inline-block'})
             ]),
 			dbc.Col(md=9, children=[
             dcc.Graph(
@@ -257,7 +268,8 @@ hierarchicalLayout = html.Div([
                         'layout': go.Layout(
                         title = 'Accident Record based on District',
                         barmode='stack')})
-			])
+			]),
+
         ])
     ], 
 className="app-page",
@@ -275,7 +287,7 @@ categoricalLayout = html.Div(children=[
             go.Layout(xaxis = dict(tickangle=-30),
                       title='Top Districts Where People Killed and Injured in Accidents', barmode='group',
                       xaxis_title="District",
-                   yaxis_title="Victims")
+                   yaxis_title="Victims (people)")
         }),
     dcc.Graph(
         id='example-graph',
@@ -285,7 +297,7 @@ categoricalLayout = html.Div(children=[
             go.Layout(xaxis = dict(tickangle=-30),
                       title='Weekday-Wise Accidents in Barcelona', barmode='group',
                       xaxis_title="Weekday",
-                   yaxis_title="Victims")
+                   yaxis_title="Victims (people)")
         })
     ], 
     className="app-page",
