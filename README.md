@@ -1,3 +1,3 @@
 "# Vizdat-barcelona-accidents" 
 
-You can access visulization on https://www.packtpub.com/free-learning
+You can access visulization on https://barcelona-analytics.herokuapp.com/accidents-viz/series
